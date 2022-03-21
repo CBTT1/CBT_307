@@ -179,6 +179,11 @@ void steer_control()
         kp = kp_fork_out;
         kd = kd_fork_out;
     }
+    else if(flag_podao && podao_up == 1)
+    {
+        kp = 2*kp_turn;
+        kd = 2*kd_turn;
+    }
     else if(flag_podao)
     {
         kp = kp_turn;

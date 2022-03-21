@@ -3971,18 +3971,18 @@ void symbol_judge()
 
         if (podao_up == 1)
         {
-            error = (92 - LCenter[0]);
+            error = (92 - LCenter[2]);
             if(flag_left_podao)
             {
-                reg_center = LCenter[0] - 10;
+                reg_center = LCenter[2] - 10;
             }
             else if(flag_right_podao)
             {
-                reg_center = LCenter[0] + 10;
+                reg_center = LCenter[2] + 10;
             }
             else
             {
-                reg_center = LCenter[0];
+                reg_center = LCenter[2];
             }
             f_straight = 1;
             kp = kp_straight;

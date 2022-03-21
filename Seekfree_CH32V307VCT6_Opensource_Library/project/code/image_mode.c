@@ -58,7 +58,7 @@ void mode4()
 {
 //    My_Tranfer_Init();
 //    My_SdCard_Init();
-//
+
 //    mt9v03x_finish_flag_dvp = 1;
 //    while(1)
 //    {
@@ -93,7 +93,7 @@ void mode4()
 //                    my_blockNum=0;
 //                    mt9v03x_finish_flag_dvp = 1;
 //                }
-//
+
 //            }
 //        }
 //        if(gpio_get_level(KEY_1) == 0)//上 一次五帧
@@ -120,10 +120,10 @@ void mode4()
 //                    my_blockNum=0;
 //                    mt9v03x_finish_flag_dvp = 1;
 //                }
-//
+
 //            }
 //        }
-//
+
 //        /************/
 //        if (gpio_get_level(KEY_6) == 0)//判断是否退出
 //        {
