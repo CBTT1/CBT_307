@@ -56,7 +56,7 @@ void speed_test()
     oled_init();
     system_delay_ms(500);
     pit_init_ms(TIM4_PIT,20);
-    interrupt_enable_all(0); 
+    interrupt_global_enable();
     int L_set = 200;
     int R_set = 200;
     while(1)
@@ -71,8 +71,8 @@ void speed_test()
             pwm_out();
             zhongduan_flag = 0;
             oled_show_string(20, 0, "speed test");
-            oled_show_int(20, 2, L_exp,6);
-            oled_show_int(80, 2, R_exp,6);
+            oled_show_int(20, 2, L_exp,3);
+            oled_show_int(80, 2, R_exp,3);
             oled_show_float(20, 4, ki_speed , 2, 1);
             oled_show_float(20, 6, kp_speed , 2, 1);
         }
@@ -132,19 +132,19 @@ void speed_test()
 
 void encoder_test()
 {
-    interrupt_disable_all();
+    interrupt_global_disable(); ;
     oled_init();
     key_init();
     oled_clear(0x00);
-    int16 x1,x2;
+    int16_t x1,x2;
     x1 = x2 = 0;
     while(1)
     {
         x1 = encoder_get_count(TIM5_ENCOEDER);
         x2 = -encoder_get_count(TIM1_ENCOEDER);
 
-        oled_show_int16(32, 0, x1);
-        oled_show_int16(32, 5, x2);
+        oled_show_int(32, 0, x1,5);
+        oled_show_int(32, 5, x2,5);
 
 
         if (gpio_get_level(KEY_5) == 0)

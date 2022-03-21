@@ -22,9 +22,7 @@
 #include "zf_device_scc8660_dvp.h"
 #include "zf_device_camera.h"
 #include "zf_device_type.h"
-#include "zf_device_oled.h"
 
-uint8 camera_send_image_frame_header[4] = {0x00, 0xFF, 0x01, 0x01};
 
 //-------------------------------------------------------------------------------------------------------------------
 // @brief       摄像头串口回调函数
@@ -50,29 +48,6 @@ void camera_uart_handler (void)
         scc8660_uart_callback_dvp();
     }
 }
-
-//-------------------------------------------------------------------------------------------------------------------
-// @brief       摄像头场中断回调函数
-// @param       void
-// @return      void
-// Sample usage:
-//-------------------------------------------------------------------------------------------------------------------
-void camera_vsync_handler (void)
-{
-    //不需要
-}
-
-//-------------------------------------------------------------------------------------------------------------------
-// @brief       摄像头采集完成DMA回调函数
-// @param       void
-// @return      void
-// Sample usage:
-//-------------------------------------------------------------------------------------------------------------------
-void camera_dma_handler (void)
-{
-    //不需要
-}
-
 //-------------------------------------------------------------------------------------------------------------------
 // @brief       摄像头DVP接口回调函数
 // @param       void
@@ -95,30 +70,6 @@ void camera_dvp_handler(void)
     }
 }
 
-
-//-------------------------------------------------------------------------------------------------------------------
-// @brief       摄像头二进制图像数据解压为十六进制八位数据 小钻风用
-// @param       *data1          摄像头图像数组
-// @param       *data2          存放解压数据的地址
-// @param       image_size      图像的大小
-// @return      void
-// Sample usage:                camera_binary_image_decompression(&ov7725_image_binary[0][0], &data_buffer[0][0], OV7725_SIZE);
-//-------------------------------------------------------------------------------------------------------------------
-void camera_binary_image_decompression (uint8 *data1, uint8 *data2, uint32 image_size)
-{
-    uint8  i = 8;
-
-    while(image_size--)
-    {
-        i = 8;
-        while(i--)
-        {
-            *data2++ = ((*data1 >> i)&0x01 ? 255:0);
-        }
-        data1++;
-    }
-}
-
 //-------------------------------------------------------------------------------------------------------------------
 // @brief       摄像头图像发送至上位机查看图像
 // @param       uartn           使用的串口号
@@ -127,7 +78,7 @@ void camera_binary_image_decompression (uint8 *data1, uint8 *data2, uint32 image
 // @return      void
 // Sample usage:                camera_send_image(DEBUG_UART_INDEX, &mt9v03x_image[0][0], MT9V03X_IMAGE_SIZE);
 //-------------------------------------------------------------------------------------------------------------------
-void camera_send_image (uart_index_enum uartn, void *image_addr, uint32 image_size)
+void camera_send_image (uart_index_enum uartn, void *image_addr, uint32_t image_size)
 {
     // 发送命令
     uart_write_byte(uartn,0x00);
@@ -136,8 +87,9 @@ void camera_send_image (uart_index_enum uartn, void *image_addr, uint32 image_si
     uart_write_byte(uartn,0x01);
 
     // 发送图像
-    uart_write_buffer(uartn, (uint8*)image_addr, image_size);
+    uart_write_buffer(uartn, (uint8_t*)image_addr, image_size);
 }
+
 
 
 uint8_t Ostu_Threshold=72;//74//61
@@ -149,7 +101,7 @@ uint8_t LCenter[70];
 #define white_block 1
 uint8_t image201[1628];
 int16_t OstuMin = 30,OstuMax = 140;
-int16_t start_p = 17;
+int16_t start_p = 14;
 float t;
 float variance;
 float maxVariance = 0, w0 = 0, avgValue = 0;
@@ -285,4 +237,3 @@ void DisplayImage_WithOLED()
         }
     }
 }
-

@@ -38,7 +38,7 @@ oled_font_size_enum oled_display_font = OLED_DEFAULT_DISPLAY_FONT;
 // Sample usage:
 // @note        内部调用 用户无需关心
 //-------------------------------------------------------------------------------------------------------------------
-static void oled_write_data(uint8 data)
+void oled_write_data(uint8 data)
 {
     OLED_CS(0);                                                             // 使能信号端，拉低时正常使用
     OLED_DC(1);
@@ -70,7 +70,7 @@ static void oled_write_command (uint8 command)
 // @since       v1.0
 // Sample usage:
 //-------------------------------------------------------------------------------------------------------------------
-static void oled_set_coordinate (uint8 x, uint8 y)
+void oled_set_coordinate (uint8 x, uint8 y)
 {
     oled_write_command(0xb0+y);
     oled_write_command(((x&0xf0)>>4)|0x10);
@@ -449,8 +449,6 @@ void oled_init(void)
 #if IPS114_USE_SOFT_SPI
     soft_spi_init(&oled_spi, 0, OLED_SOFT_SPI_DELAY, OLED_D0_PIN, OLED_D1_PIN, SOFT_SPI_PIN_NULL, SOFT_SPI_PIN_NULL);
 #else
-    zf_assert(OLED_SPI != (OLED_D0_PIN&0xF000>>12));
-    zf_assert(OLED_SPI != (OLED_D1_PIN&0xF000>>12));
     spi_init(OLED_SPI, SPI_MODE0, OLED_SPI_SPEED, OLED_D0_PIN, OLED_D1_PIN, SPI_MISO_NULL, SPI_CS_NULL);
 #endif
     gpio_init(OLED_RES_PIN, GPO, GPIO_HIGH, GPO_PUSH_PULL);

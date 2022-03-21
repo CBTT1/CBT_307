@@ -8,7 +8,7 @@ struct page p0,p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11,p12,p13,p14,p15,p16,p17,p18,p1
 int16 dir_ku = 1;
 int16 dir_forkroad = 1;
 int16 chuku_flag = 0;
-int16 Flash_SaveBlocks = 1;
+int16 Flash_SaveBlocks = 0;
 int16 lgpt12 = 0,rgpt12 = 0;
 
 
@@ -154,7 +154,7 @@ void run()
             compress_image();
             get_centerline();
             Cal_losttimes(break_hangshu);
-//            breakhang_hold(2,15,break_hangshu);
+            breakhang_hold(2,15,break_hangshu);
 
 
 
@@ -174,7 +174,10 @@ void run()
             fork(dir_forkroad);
             crossroad();
             symbol_judge();
+
             pwm_out();
+
+
             zhongduan_flag = 0;
             mt9v03x_finish_flag_dvp = 0;
 

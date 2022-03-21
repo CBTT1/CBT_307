@@ -10,8 +10,6 @@
 #include "zf_common_headfile.h"
 #include "cbt_headfile.h"
 
-#define uint8 uint8
-#define uint32 uint32
 extern uint8 image201[1628];
 //定义传输结构体
 extern uint8 LCenter[70], L_black[70], R_black[70];//拟图三线

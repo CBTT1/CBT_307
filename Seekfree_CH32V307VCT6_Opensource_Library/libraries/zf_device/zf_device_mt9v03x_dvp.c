@@ -16,7 +16,7 @@
 * @date             2021-11-25
 * @note             version:
 *                   V1.1 2021.12.23 摄像头采集完成标志位增加volatile修饰
-*                   V1.2 2022.03.16 修改部分不重要的注释
+*
 *                   接线定义：
 *                   ------------------------------------
 *                   模块管脚            单片机管脚
@@ -41,17 +41,17 @@
 #include "zf_device_type.h"
 
 
-uint8 *camera_buffer_addr;                                                    // 摄像头缓冲区地址指针
+uint8_t *camera_buffer_addr;                                                    // 摄像头缓冲区地址指针
 
-uint8 volatile mt9v03x_finish_flag_dvp = 0;                                                // 一场图像采集完成标志位
-uint8 mt9v03x_image_dvp[MT9V03X_DVP_H][MT9V03X_DVP_W];
+uint8_t volatile mt9v03x_finish_flag_dvp = 0;                                                // 一场图像采集完成标志位
+uint8_t mt9v03x_image_dvp[MT9V03X_DVP_H][MT9V03X_DVP_W];
 
-static          uint8     receive_dvp[3];
-static          uint8     receive_num_dvp = 0;
-static volatile uint8     uart_receive_flag_dvp;
+static          uint8_t     receive_dvp[3];
+static          uint8_t     receive_num_dvp = 0;
+static volatile uint8_t     uart_receive_flag_dvp;
 
 //需要配置到摄像头的数据
-int16 mt9v03x_set_confing_buffer_dvp[CONFIG_FINISH][2]=
+int16_t mt9v03x_set_confing_buffer_dvp[CONFIG_FINISH][2]=
 {
     {AUTO_EXP,          34},                                                     // 自动曝光设置       范围1-63 0为关闭 如果自动曝光开启  EXP_TIME命令设置的数据将会变为最大曝光时间，也就是自动曝光时间的上限
                                                                                 // 一般情况是不需要开启这个功能，因为比赛场地光线一般都比较均匀，如果遇到光线非常不均匀的情况可以尝试设置该值，增加图像稳定性
@@ -66,11 +66,11 @@ int16 mt9v03x_set_confing_buffer_dvp[CONFIG_FINISH][2]=
                                                                                 //像素时钟模式命令 PCLK模式     默认：0     可选参数为：0 1。        0：不输出消隐信号，1：输出消隐信号。(通常都设置为0，如果使用CH32V307的DVP接口或STM32的DCMI接口采集需要设置为1)
 
 
-    {INIT,              0}
+    {INIT,              0}                                                      // 摄像头开始初始化
 };
 
 //从摄像头内部获取到的配置数据
-int16 mt9v03x_get_confing_buffer_dvp[CONFIG_FINISH-1][2]=
+int16_t mt9v03x_get_confing_buffer_dvp[CONFIG_FINISH-1][2]=
 {
     {AUTO_EXP,          0},                                                     // 自动曝光设置
     {EXP_TIME,          0},                                                     // 曝光时间
@@ -87,14 +87,14 @@ int16 mt9v03x_get_confing_buffer_dvp[CONFIG_FINISH-1][2]=
 // @brief       配置摄像头内部配置信息 内部调用
 // @param       uartn           选择使用的串口
 // @param       buff            发送配置信息的地址
-// @return      uint8         1-失败 0-成功
+// @return      uint8_t         1-失败 0-成功
 // Sample usage:                调用该函数前请先初始化串口
 //-------------------------------------------------------------------------------------------------------------------
-static uint8 mt9v03x_set_config_dvp (int16 buff[CONFIG_FINISH-1][2])
+static uint8_t mt9v03x_set_config_dvp (int16_t buff[CONFIG_FINISH-1][2])
 {
-    uint16 temp, i;
-    uint8  send_buffer[4];
-    volatile int16 timeout = MT9V03X_INIT_TIMEOUT;
+    uint16_t temp, i;
+    uint8_t  send_buffer[4];
+    volatile int16_t timeout = MT9V03X_INIT_TIMEOUT;
 
     uart_receive_flag_dvp = 0;
 
@@ -106,7 +106,7 @@ static uint8 mt9v03x_set_config_dvp (int16 buff[CONFIG_FINISH-1][2])
         send_buffer[1] = buff[i][0];
         temp = buff[i][1];
         send_buffer[2] = temp>>8;
-        send_buffer[3] = (uint8)temp;
+        send_buffer[3] = (uint8_t)temp;
         uart_write_buffer(MT9V03X_COF_UART_DVP,send_buffer,4);
 
         system_delay_ms(2);
@@ -135,14 +135,14 @@ static uint8 mt9v03x_set_config_dvp (int16 buff[CONFIG_FINISH-1][2])
 // @brief       获取摄像头内部配置信息 内部调用
 // @param       uartn           选择使用的串口
 // @param       buff            接收配置信息的地址
-// @return      uint8         1-失败 0-成功
+// @return      uint8_t         1-失败 0-成功
 // Sample usage:                调用该函数前请先初始化串口
 //-------------------------------------------------------------------------------------------------------------------
-static uint8 mt9v03x_get_config_dvp (int16 buff[CONFIG_FINISH-1][2])
+static uint8_t mt9v03x_get_config_dvp (int16_t buff[CONFIG_FINISH-1][2])
 {
-    uint16 temp, i;
-    uint8  send_buffer[4];
-    volatile int16 timeout = MT9V03X_INIT_TIMEOUT;
+    uint16_t temp, i;
+    uint8_t  send_buffer[4];
+    volatile int16_t timeout = MT9V03X_INIT_TIMEOUT;
 
     for(i=0; i<(CONFIG_FINISH-1); i++)
     {
@@ -150,7 +150,7 @@ static uint8 mt9v03x_get_config_dvp (int16 buff[CONFIG_FINISH-1][2])
         send_buffer[1] = GET_STATUS;
         temp = buff[i][0];
         send_buffer[2] = temp>>8;
-        send_buffer[3] = (uint8)temp;
+        send_buffer[3] = (uint8_t)temp;
         uart_write_buffer(MT9V03X_COF_UART_DVP,send_buffer,4);
 
         timeout = MT9V03X_INIT_TIMEOUT;
@@ -193,20 +193,20 @@ void mt9v03x_uart_callback_dvp (void)
 //-------------------------------------------------------------------------------------------------------------------
 // @brief       获取摄像头固件版本
 // @param       void            选择使用的串口
-// @return      uint16        0-获取错误 N-版本号
+// @return      uint16_t        0-获取错误 N-版本号
 // Sample usage:                调用该函数前请先初始化串口
 //-------------------------------------------------------------------------------------------------------------------
-uint16 mt9v03x_get_version_dvp (void)
+uint16_t mt9v03x_get_version_dvp (void)
 {
-    uint16 temp;
-    uint8  send_buffer[4];
-    volatile int16 timeout = MT9V03X_INIT_TIMEOUT;
+    uint16_t temp;
+    uint8_t  send_buffer[4];
+    volatile int16_t timeout = MT9V03X_INIT_TIMEOUT;
 
     send_buffer[0] = 0xA5;
     send_buffer[1] = GET_STATUS;
     temp = GET_VERSION;
     send_buffer[2] = temp>>8;
-    send_buffer[3] = (uint8)temp;
+    send_buffer[3] = (uint8_t)temp;
     uart_write_buffer(MT9V03X_COF_UART_DVP,send_buffer,4);
 
     while(!uart_receive_flag_dvp && timeout-- > 0)                                  // 等待接受回传数据
@@ -217,27 +217,27 @@ uint16 mt9v03x_get_version_dvp (void)
 
     if(timeout <= 0)                                                            // 超时
         return 0;
-    return ((uint16)(receive_dvp[1]<<8) | receive_dvp[2]);
+    return ((uint16_t)(receive_dvp[1]<<8) | receive_dvp[2]);
 }
 
 //-------------------------------------------------------------------------------------------------------------------
 // @brief       单独设置摄像头曝光时间
 // @param       uartn           选择使用的串口
 // @param       light           设置曝光时间越大图像越亮，摄像头收到后会根据分辨率及FPS计算最大曝光时间如果设置的数据过大，那么摄像头将会设置这个最大值
-// @return      uint8         1-失败 0-成功
+// @return      uint8_t         1-失败 0-成功
 // Sample usage:                调用该函数前请先初始化串口
 //-------------------------------------------------------------------------------------------------------------------
-uint8 mt9v03x_set_exposure_time_dvp (uint16 light)
+uint8_t mt9v03x_set_exposure_time_dvp (uint16_t light)
 {
-    uint16 temp;
-    uint8  send_buffer[4];
-    volatile int16 timeout = MT9V03X_INIT_TIMEOUT;
+    uint16_t temp;
+    uint8_t  send_buffer[4];
+    volatile int16_t timeout = MT9V03X_INIT_TIMEOUT;
 
     send_buffer[0] = 0xA5;
     send_buffer[1] = SET_EXP_TIME;
     temp = light;
     send_buffer[2] = temp>>8;
-    send_buffer[3] = (uint8)temp;
+    send_buffer[3] = (uint8_t)temp;
     uart_write_buffer(MT9V03X_COF_UART_DVP,send_buffer,4);
 
     while(!uart_receive_flag_dvp && timeout-- > 0)                                  // 等待接受回传数据
@@ -258,20 +258,20 @@ uint8 mt9v03x_set_exposure_time_dvp (uint16 light)
 // @param       uartn           选择使用的串口
 // @param       addr            摄像头内部寄存器地址
 // @param       data            需要写入的数据
-// @return      uint8         1-失败 0-成功
+// @return      uint8_t         1-失败 0-成功
 // Sample usage:                调用该函数前请先初始化串口
 //-------------------------------------------------------------------------------------------------------------------
-uint8 mt9v03x_set_reg_dvp (uint8 addr, uint16 data)
+uint8_t mt9v03x_set_reg_dvp (uint8_t addr, uint16_t data)
 {
-    uint16 temp;
-    uint8  send_buffer[4];
-    volatile int16 timeout = MT9V03X_INIT_TIMEOUT;
+    uint16_t temp;
+    uint8_t  send_buffer[4];
+    volatile int16_t timeout = MT9V03X_INIT_TIMEOUT;
 
     send_buffer[0] = 0xA5;
     send_buffer[1] = SET_ADDR;
     temp = addr;
     send_buffer[2] = temp>>8;
-    send_buffer[3] = (uint8)temp;
+    send_buffer[3] = (uint8_t)temp;
     uart_write_buffer(MT9V03X_COF_UART_DVP,send_buffer,4);
 
     system_delay_ms(10);
@@ -279,7 +279,7 @@ uint8 mt9v03x_set_reg_dvp (uint8 addr, uint16 data)
     send_buffer[1] = SET_DATA;
     temp = data;
     send_buffer[2] = temp>>8;
-    send_buffer[3] = (uint8)temp;
+    send_buffer[3] = (uint8_t)temp;
     uart_write_buffer(MT9V03X_COF_UART_DVP,send_buffer,4);
 
     while(!uart_receive_flag_dvp && timeout-- > 0)                                  // 等待接受回传数据
@@ -304,20 +304,21 @@ uint8 mt9v03x_set_reg_dvp (uint8 addr, uint16 data)
 //-------------------------------------------------------------------------------------------------------------------
 void mt9v03x_handler_dvp(void)
 {
-    DVP->DMA_BUF0 = (uint32)camera_buffer_addr;       // 恢复DMA地址
+    DVP->DMA_BUF0 = (uint32_t)camera_buffer_addr;       // 恢复DMA地址
     mt9v03x_finish_flag_dvp = 1;                        // 摄像头采集完成标志位置1
     DVP->CR0 |= RB_DVP_ENABLE;                          // 重新打开DVP，采集下一副图像
 }
 
 
 
+
 //-------------------------------------------------------------------------------------------------------------------
 // @brief       MT9V03X摄像头初始化
 // @param       void
-// @return      uint8         1-失败 0-成功
+// @return      uint8_t         1-失败 0-成功
 // Sample usage:                使用FLEXIO接口采集摄像头
 //-------------------------------------------------------------------------------------------------------------------
-uint8 mt9v03x_init_dvp (void)
+uint8_t mt9v03x_init_dvp (void)
 {
     set_camera_type(CAMERA_GRAYSCALE);             //设置连接摄像头类型为总钻风
 

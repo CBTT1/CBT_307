@@ -722,8 +722,8 @@ void find_rightup_point(uint8 start_point, uint8 end_point, uint8 RoadName)
             //如果出现了连续的行数超过45行判定为长直道，此时不存在拐点
             if (flag_s >= 47) break;
             //右上拐点
-            if ((R_black[j - 1] - R_black[j - 2]) >= 3 && My_Abs(R_black[j] - R_black[j - 1]) <= 4 && My_Abs(R_black[j + 1] - R_black[j]) <= 4
-                && rightfindflag[j - 1] == 1 && rightfindflag[j] == 1 && rightfindflag[j + 1] == 1 || (R_black[j - 1] - R_black[j - 2] >= 15 && My_Abs(R_black[j] - R_black[j - 1]) <= 4 && My_Abs(R_black[j + 1] - R_black[j]) <= 4))
+            if (j >= 2 && ((R_black[j - 1] - R_black[j - 2]) >= 3 && My_Abs(R_black[j] - R_black[j - 1]) <= 4 && My_Abs(R_black[j + 1] - R_black[j]) <= 4
+                && rightfindflag[j - 1] == 1 && rightfindflag[j] == 1 && rightfindflag[j + 1] == 1 || (R_black[j - 1] - R_black[j - 2] >= 15 && My_Abs(R_black[j] - R_black[j - 1]) <= 4 && My_Abs(R_black[j + 1] - R_black[j]) <= 4)))
             {
                 right_turn_up[0] = (uint8)(j + 1);
                 right_turn_up[1] = R_black[j];
@@ -763,9 +763,9 @@ void find_leftup_point(uint8 start_point, uint8 end_point, uint8 RoadName)
         {
             //左上拐点
             //L_black[j - 2] - L_black[j - 3] <= -4 &&
-            if ((L_black[j - 1] - L_black[j - 2] <= -3 && L_black[j] - L_black[j - 1] <= 4 && L_black[j + 1] - L_black[j] <= 4
+            if (j >= 2 && ((L_black[j - 1] - L_black[j - 2] <= -3 && L_black[j] - L_black[j - 1] <= 4 && L_black[j + 1] - L_black[j] <= 4
                 && leftfindflag[j - 1] == 1 && leftfindflag[j] == 1 && leftfindflag[j + 1] == 1)
-                || (L_black[j - 1] - L_black[j - 2] <= -15 && L_black[j] - L_black[j - 1] <= 4 && L_black[j + 1] - L_black[j + 2] <= 4))
+                || (L_black[j - 1] - L_black[j - 2] <= -15 && L_black[j] - L_black[j - 1] <= 4 && L_black[j + 1] - L_black[j + 2] <= 4)))
             {
 
                 left_turn_up[0] = (uint8)(j + 1);//数组里面没有第0行
@@ -903,7 +903,7 @@ void breakhang_hold(uint8 startline, uint8 endline, uint8 j)
     {
             for (uint8 i = j; i < 70; i++)
             {
-                if(j>2)
+                if (j >= 2)
                 {
                     LCenter[i] = LCenter[j - 2];
                 }
@@ -927,11 +927,10 @@ void breakhang_hold(uint8 startline, uint8 endline, uint8 j)
     {
         for (uint8 i = j; i < 70; i++)
         {
-            if(j>2)
+            if (j >= 2)
             {
                 LCenter[i] = LCenter[j - 2];
             }
-
         }
     }
 }
@@ -1730,7 +1729,7 @@ void fork(int16 dir)
                 //    //SetText("左斜入三叉");
                 //}
 
-                else if (Trans_Pixels(55,92)==0 && (l_start > 30 || rou_of_left > 1500) && min_V_x > 25 && min_V_x < 130 && right_turn_down[0] > 3)
+                else if (Trans_Pixels(55,92)==0 && (l_start > 30 || rou_of_left > 1500) && min_V_y <35 && min_V_x > 25 && min_V_x < 130 && right_turn_down[0] > 3)
                 {
                     k = b = 0;
                     regression(2, 0, right_turn_down[0] - 3);
@@ -1739,7 +1738,7 @@ void fork(int16 dir)
                         R_Start[i] = (uint8)(k * i + b);
                     }
 
-                    if (R_Start[min_V_y] - min_V_x < -15 && (R_Start[min_V_y] - min_V_x > -40 || left_turn_down[0] < 25 || (left_turn_down[0] > 0 && right_turn_down [0] < 45) ))
+                    if (R_Start[min_V_y] - min_V_x < -15 && (R_Start[min_V_y] - min_V_x > -40 || (left_turn_down[0] < 25 && left_turn_down[0] > 0 && right_turn_down [0] < 45) ))
                     {
                         flag_forkroad = 1;
                         status_forkroad = 1;
@@ -1881,14 +1880,17 @@ void fork(int16 dir)
                     }
                 }
                 //SetText("“V”拐点最低点为" + min_V_x + "  " + min_V_y);
-                 if ((r_start > 30 || rou_of_right > 1500) && min_V_x > 20 && min_V_x < 165 && Trans_Pixels(min_V_y - 2,min_V_x - 15)!= 0 && v_guai[min_V_x + 1] - v_guai[min_V_x] <= 1 && v_guai[min_V_x - 1] - v_guai[min_V_x] <= 1 && v_guai[min_V_x] - v_guai[min_V_x - 15] <= 3 && v_guai[min_V_x + 15] - v_guai[min_V_x] >= 3 && v_guai[min_V_x - 4] - v_guai[min_V_x] <= 3)
+                 if ((r_start > 30 || rou_of_right > 1500) && min_V_x > 20 && min_V_x < 165 && Trans_Pixels(min_V_y - 2,min_V_x - 15)!= 0
+                         && v_guai[min_V_x + 1] - v_guai[min_V_x] <= 1 && v_guai[min_V_x - 1] - v_guai[min_V_x] <= 1 && v_guai[min_V_x] - v_guai[min_V_x - 15] <= 3
+                         && v_guai[min_V_x + 15] - v_guai[min_V_x] >= 2 && v_guai[min_V_x - 4] - v_guai[min_V_x] <= 3)
                 {
                     status_forkroad = 4;
                     //SetText("出三叉");
                 }
                 else if (left_turn_down[0] > 0 && right_turn_down[0] > 0)
                 {
-                    if (Trans_Pixels(55,92) == 0 && Trans_Pixels(60,92) == 0 && (Trans_Pixels(60,70) == 0|| Trans_Pixels(65,65) == 0) && (Trans_Pixels(60,110) == 0||Trans_Pixels(65,100) == 0) && L_black[min_V_y - 5] > 175 && R_black[min_V_y - 5] < 10 && v_guai[min_V_x + 1] - v_guai[min_V_x] <= 1 && v_guai[min_V_x - 1] - v_guai[min_V_x] <= 1 && v_guai[min_V_x + 4] - v_guai[min_V_x] <= 3 && v_guai[min_V_x - 4] - v_guai[min_V_x] <= 3)
+                    if (Trans_Pixels(55,92) == 0 && Trans_Pixels(60,92) == 0 && (Trans_Pixels(60,70) == 0|| Trans_Pixels(65,65) == 0) && (Trans_Pixels(60,110) == 0||Trans_Pixels(65,100) == 0)
+                            && min_V_x>20 &&min_V_x <170 && L_black[min_V_y - 5] > 175 && R_black[min_V_y - 5] < 10 && v_guai[min_V_x + 1] - v_guai[min_V_x] <= 1 && v_guai[min_V_x - 1] - v_guai[min_V_x] <= 1 && v_guai[min_V_x + 4] - v_guai[min_V_x] <= 3 && v_guai[min_V_x - 4] - v_guai[min_V_x] <= 3)
                     {
                         status_forkroad = 4;
                         //SetText("正出三叉");
@@ -1974,7 +1976,10 @@ void fork(int16 dir)
                     b = min_V_x - k * min_V_y;
                     for (int i = 0; i <= min_V_y; i++)
                     {
-                        R_black[i] = (uint8)(k * i + b);
+                        int temp = (int)(k * i + b);
+                        if (temp > 185) temp = 185;
+                        else if (temp < 0) temp = 0;
+                        R_black[i] = (uint8)temp;
 
                     }
                 }
@@ -2084,7 +2089,7 @@ void fork(int16 dir)
                 //    //SetText("右斜入三叉");
 
                 //}
-                else if (Trans_Pixels(55,92)==0 && (r_start > 30 || rou_of_right > 1500) && min_V_x > 10 && min_V_x < 130 && left_turn_down[0] > 3)
+                else if (Trans_Pixels(55,92)==0 && (r_start > 30 || rou_of_right > 1500) && min_V_y < 35 && min_V_x > 10 && min_V_x < 130 && left_turn_down[0] > 3)
                 {
                     k = b = 0;
                     regression(1, 0, left_turn_down[0] - 3);
@@ -2092,7 +2097,7 @@ void fork(int16 dir)
                     {
                         R_Start[i] = (uint8)(k * i + b);
                     }
-                    if (R_Start[min_V_y] - min_V_x > 15 && (R_Start[min_V_y] - min_V_x <40 || left_turn_down[0] < 25 || (right_turn_down[0] > 0 && left_turn_down[0] < 45)))
+                    if (R_Start[min_V_y] - min_V_x > 15 && (R_Start[min_V_y] - min_V_x <40 || (right_turn_down[0] < 30 && right_turn_down[0] > 0 && left_turn_down[0] < 45)))
                     {
                         flag_forkroad = 1;
                         status_forkroad = 1;
@@ -2209,14 +2214,17 @@ void fork(int16 dir)
                     left_turn_down[1] = L_black[left_turn_down[0]];
                 }
 
-                if ( (l_start > 30 || rou_of_left > 1500) && min_V_x > 20 && min_V_x < 165 && Trans_Pixels(min_V_y - 2,min_V_x - 15)!= 0 && v_guai[min_V_x + 1] - v_guai[min_V_x] <= 1 && v_guai[min_V_x - 1] - v_guai[min_V_x] >= 1 && v_guai[min_V_x + 15] - v_guai[min_V_x] <= 3 && v_guai[min_V_x + 4] - v_guai[min_V_x] <= 3 && v_guai[min_V_x - 15] - v_guai[min_V_x] >= 3 )
+                if ( (l_start > 30 || rou_of_left > 1500) && min_V_x > 20 && min_V_x < 165 && Trans_Pixels(min_V_y - 2,min_V_x - 15)!= 0
+                        && v_guai[min_V_x + 1] - v_guai[min_V_x] <= 1 && v_guai[min_V_x - 1] - v_guai[min_V_x] >= 1 && v_guai[min_V_x + 15] - v_guai[min_V_x] <= 3
+                        && v_guai[min_V_x + 4] - v_guai[min_V_x] <= 3 && v_guai[min_V_x - 15] - v_guai[min_V_x] >= 2 )
                 {
                     status_forkroad = 4;
                     //SetText("出三叉");
                 }
                 else if (left_turn_down[0] > 0 && right_turn_down[0] > 0)
                 {
-                    if (Trans_Pixels(55,92) == 0 && Trans_Pixels(60,92) == 0 && (Trans_Pixels(60,70) == 0 || Trans_Pixels(65,65) == 0) && (Trans_Pixels(60,110) == 0 || Trans_Pixels(65,100) == 0) && L_black[min_V_y - 5] > 175 && R_black[min_V_y - 5] < 10 && v_guai[min_V_x + 1] - v_guai[min_V_x] <= 1 && v_guai[min_V_x - 1] - v_guai[min_V_x] <= 1 && v_guai[min_V_x + 4] - v_guai[min_V_x] <= 3 && v_guai[min_V_x - 4] - v_guai[min_V_x] <= 3)
+                    if (Trans_Pixels(55,92) == 0 && Trans_Pixels(60,92) == 0 && (Trans_Pixels(60,70) == 0 || Trans_Pixels(65,65) == 0) && (Trans_Pixels(60,110) == 0 || Trans_Pixels(65,100) == 0)
+                            && min_V_x>20 &&min_V_x <170&& L_black[min_V_y - 5] > 175 && R_black[min_V_y - 5] < 10 && v_guai[min_V_x + 1] - v_guai[min_V_x] <= 1 && v_guai[min_V_x - 1] - v_guai[min_V_x] <= 1 && v_guai[min_V_x + 4] - v_guai[min_V_x] <= 3 && v_guai[min_V_x - 4] - v_guai[min_V_x] <= 3)
                     {
                         status_forkroad = 4;
                         //SetText("正出三叉");
@@ -2308,8 +2316,10 @@ void fork(int16 dir)
                     b = min_V_x - k * min_V_y;
                     for (int i = 0; i <= min_V_y; i++)
                     {
-                        L_black[i] = (uint8)(k * i + b);
-
+                        int temp = (int)(k * i + b);
+                        if (temp > 185) temp = 185;
+                        else if (temp < 0) temp = 0;
+                        L_black[i] = (uint8)temp;
                     }
                 }
                 else if (left_turn_down[0] > 0 && right_turn_down[0] == 0)
@@ -2359,7 +2369,7 @@ void fork(int16 dir)
         {
             LCenter[j] = (uint8)((L_black[j] + R_black[j]) / 2);
         }
-        if (min_V_y >= 25 && min_V_y <60 )
+        if (min_V_y >= 25)
         {
             breakhang_hold(2, 15, (uint8)My_Min(break_hangshu, min_V_y));
         }
@@ -2465,7 +2475,7 @@ void crossroad()
         //////////////SetText("(" + left_turn_up[1] + "," + left_turn_up[0] + ")          (" + right_turn_up[1] + "," + right_turn_up[0] + ")");
         //////////////SetText("   ");
 
-        if (left_turn_down[0] > 10 || right_turn_down[0] > 10) // 发现下拐点
+        if (left_turn_down[0] > 8 || right_turn_down[0] > 8) // 发现下拐点
         {
 
             int j = 0;
@@ -2832,7 +2842,7 @@ void podao()
         float mid_k = regression(0, 56, 66);
         uint8 judge = 0;
         rou_of_center = 0;
-        Cal__estimator(0, 2, 55);
+        Cal_estimator(0);
         find_rightup_point(3,30,0);
         find_leftup_point(3,30,0);
 
@@ -2870,7 +2880,7 @@ void podao()
         else if (podao_up == 1)
         {
 
-            if (width[1]<60&&(break_hangshu <= 40 || width[10] < 60))
+            if (width[1]<70&&(break_hangshu <= 40 || width[10] < 60))
             {
                 flag_podao = 2;
                 podao_up = 0;
@@ -2973,7 +2983,7 @@ void huandao()
             //////////////SetText("左线方差为:" + rou_of_left);
             //////////////SetText("右线方差为:" + rou_of_right);
 
-            if (right_turn_middle[1] > 15 && right_turn_middle[0] > 16 && right_turn_middle[0] <= 62 && rou_of_left < 20 && rou_of_right > 40 && k_top_r > 0) // && left_turn_middle[0] == 0
+            if (right_turn_middle[1] > 15 && right_turn_middle[0] > 16 && right_turn_middle[0] <= 62 && left_turn_middle[1] > 175 && rou_of_left < 20 && rou_of_right > 55 && k_top_r > -2) // && left_turn_middle[0] == 0
             {
                 //////////////SetText("********************找到右环岛*********************");
                 flag_roundabout = 1;
@@ -3034,8 +3044,7 @@ void huandao()
             //////////////SetText("环岛计算方差:");
             //////////////SetText("左线方差为:" + rou_of_left);
             //////////////SetText("右线方差为:" + rou_of_right);
-
-            if (left_turn_middle[1] < 170 && left_turn_middle[0] > 16 && left_turn_middle[0] <= 62 && rou_of_right < 20 && rou_of_left > 40 && k_top_l < 0) //&& right_turn_middle[0] == 0
+            if (left_turn_middle[1] < 170 && left_turn_middle[0] > 16 && left_turn_middle[0] <= 62 && right_turn_middle[1] < 10 && rou_of_right < 20 && rou_of_left > 55   && k_top_l < 2) //&& right_turn_middle[0] == 0
             {
                 //////////////SetText("********************找到左环岛*********************");
                 flag_roundabout = 1;
@@ -3078,7 +3087,7 @@ void huandao()
             {
                 //////////////SetText("！！！！！右下拐点无效");
                 //////////////SetText("从第16行开始向上找右中");
-                find_rightmiddle_point(16, 50);
+                find_rightmiddle_point(16, 60);
             }
             if (right_turn_middle[0] != 0 && status_roundabout != 4) flag_find_huan_rightmiddle_point = 1;
 
@@ -3182,16 +3191,21 @@ void huandao()
 
                     for (i = (uint8)(left_turn_down[0] + 1); i < break_hangshu; i++)
                     {
-                        if (L_black[i] - L_black[i - 1] <= -20)
+                        if (L_black[i] - L_black[i - 1] <= -20 )
                         {
                             left_breakpoint = i;
+                            break;
+                        }
+                        else if (L_black[i] - L_black[i - 1] <= -10 && left_turn_middle[0] > 50)
+                        {
+                            left_breakpoint = left_turn_middle[0];
                             break;
                         }
                     }
                     //////////////SetText("断点为" + left_breakpoint);
                     //////////////SetText("真正的左上拐点       ");
                     //////////////SetText("(" + L_black[left_breakpoint] + "," + left_breakpoint + ")");
-                    if (width[20] > 115 && lostleft_times > 20 && left_breakpoint > 0 && left_breakpoint < 50)
+                    if (width[20] > 115 && lostleft_times > 20 && left_breakpoint > 0 && (left_breakpoint < 50 || left_breakpoint == left_turn_middle[0]))
                     {
                         status_roundabout = 3;
                     }
@@ -3548,7 +3562,7 @@ void huandao()
                         k = (0 - left_turn_down[1]) * 1.0f / (delta * 1.0f);
                         b = left_turn_down[1] - (left_turn_down[0] - 5) * k;
 
-                        for (j = (uint8)(left_turn_down[0] - 5); j <= (uint8)r_start_sec; j++)
+                        for (j = (uint8)(left_turn_down[0] - 5); j < (uint8)r_start_sec; j++)
                         {
                             int jicun = ((int)(k * j + b));
                             if (jicun >= 185) jicun = 185;
@@ -3839,7 +3853,7 @@ void huandao()
                         k = (175 - right_turn_down[1]) * 1.0f / (delta * 1.0f);
                         b = right_turn_down[1] - (right_turn_down[0] - 5) * k;
 
-                        for (j = (uint8)(right_turn_down[0] - 5); j <= (uint8)l_start_sec; j++)
+                        for (j = (uint8)(right_turn_down[0] - 5); j < (uint8)l_start_sec; j++)
                         {
                             int jicun = ((int)(k * j + b));
                             if (jicun >= 185) jicun = 185;

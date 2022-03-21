@@ -39,14 +39,14 @@
 #else
 //====================================================硬件 SPI 驱动====================================================
 #define OLED_SPI_SPEED                  system_clock/2                          // 硬件 SPI 速率
-#define OLED_SPI                        SPI_2                                   // 硬件 SPI 号
-#define OLED_D0_PIN                     SPI2_SCK_B13                             // 硬件 SPI SCK 引脚
-#define OLED_D1_PIN                     SPI2_MOSI_B15                            // 硬件 SPI MOSI 引脚
+#define OLED_SPI                        SPI_3                                   // 硬件 SPI 号
+#define OLED_D0_PIN                     SPI3_SCK_B3                             // 硬件 SPI SCK 引脚
+#define OLED_D1_PIN                     SPI3_MOSI_B5                            // 硬件 SPI MOSI 引脚
 //====================================================硬件 SPI 驱动====================================================
 #endif
 
-#define OLED_RES_PIN                    B7                                     // 液晶复位引脚定义
-#define OLED_DC_PIN                     D7                                      // 液晶命令位引脚定义
+#define OLED_RES_PIN                    E3                                     // 液晶复位引脚定义
+#define OLED_DC_PIN                     E2                                      // 液晶命令位引脚定义
 #define OLED_CS_PIN                     D4                                      // CS 片选引脚
 
 #define OLED_RES(x)                     (x?(gpio_high(OLED_RES_PIN)):(gpio_low(OLED_RES_PIN)))
@@ -74,7 +74,9 @@ typedef enum
 void    oled_clear                      (const uint8 color);
 void    oled_set_dir                    (oled_dir_enum dir);
 void    oled_set_font                   (oled_font_size_enum font);
+void    oled_write_data                 (uint8 data);
 void    oled_draw_point                 (uint16 x, uint16 y, const uint8 color);
+void    oled_set_coordinate             (uint8 x, uint8 y);
 
 void    oled_show_string                (uint8 x, uint8 y, const char ch[]);
 void    oled_show_int                   (uint16 x, uint16 y, const int32 dat, uint8 num);

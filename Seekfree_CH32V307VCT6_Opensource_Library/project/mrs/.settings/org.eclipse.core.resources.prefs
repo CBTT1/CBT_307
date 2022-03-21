@@ -1,5 +1,7 @@
 eclipse.preferences.version=1
 encoding//code/Testmode.c=UTF-8
+encoding//code/control.c=UTF-8
+encoding//code/image_deal.c=UTF-8
 encoding//code/image_mode.c=UTF-8
 encoding//code/my_menu.c=UTF-8
 encoding//zf_common/zf_common_typedef.h=UTF-8

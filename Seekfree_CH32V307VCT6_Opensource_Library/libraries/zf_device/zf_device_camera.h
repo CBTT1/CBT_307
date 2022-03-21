@@ -27,13 +27,14 @@
 #include "zf_driver_timer.h"
 #include "zf_driver_dvp.h"
 #include "zf_driver_uart.h"
+#include "zf_device_oled.h"
 
 #include "zf_device_type.h"
 
 
-extern uint8 *camera_buffer_addr;
-
-void camera_init (camera_type_enum camera_install, uint32 image_size);
+extern uint8_t *camera_buffer_addr;
+extern int16_t OstuMin,OstuMax;
+void camera_init (camera_type_enum camera_install, uint32_t image_size);
 
 void camera_uart_handler (void);
 //void camera_vsync_handler (void);
@@ -42,8 +43,8 @@ void camera_dvp_handler(void);
 void compress_image();
 void DisplayImage_WithOLED();
 void gray201image_clear();
-uint8 Trans_Pixels(uint8_t x,uint8_t y);
-void camera_binary_image_decompression (uint8 *data1, uint8 *data2, uint32 image_size);
-void camera_send_image (uart_index_enum uartn, void *image_addr, uint32 image_size);
+uint8_t Trans_Pixels(uint8_t x,uint8_t y);
+void camera_binary_image_decompression (uint8_t *data1, uint8_t *data2, uint32_t image_size);
+void camera_send_image (uart_index_enum uartn, void *image_addr, uint32_t image_size);
 
 #endif

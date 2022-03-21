@@ -2,6 +2,7 @@
 #include "zf_common_headfile.h"
 #include "cbt_headfile.h"
 #include "stdlib.h"
+#include "isr.h"
 
 int16 middle = 726;
 uint16 steer_out = 0;
@@ -71,20 +72,20 @@ void Incremental_pwm()
         R_pwm=0;
     }
 
-//    if((Trans_Pixels(1,LCenter[1]) == 0 && Trans_Pixels(2,LCenter[2]) == 0 )|| flag_ruku >=2)
-//    {
-//        pwm_set_duty(TIM9_PWM_CH2_A3,0);//右前
-//        pwm_set_duty(TIM9_PWM_CH1_A2,0);//右后
-//        pwm_set_duty(TIM3_PWM_CH3_B0,0);//左前
-//        pwm_set_duty(TIM3_PWM_CH4_B1,0); //左后
-//    }
-//    else
-//    {
+    if((Trans_Pixels(1,LCenter[1]) == 0 && Trans_Pixels(2,LCenter[2]) == 0 && flag_podao == 0 )|| flag_ruku >=2)
+    {
+        pwm_set_duty(TIM9_PWM_CH2_A3,0);//右前
+        pwm_set_duty(TIM9_PWM_CH1_A2,0);//右后
+        pwm_set_duty(TIM3_PWM_CH3_B0,0);//左前
+        pwm_set_duty(TIM3_PWM_CH4_B1,0); //左后
+    }
+    else
+    {
         pwm_set_duty(TIM3_PWM_CH4_B1,R_pwm);//右前
         pwm_set_duty(TIM3_PWM_CH3_B0,R_pwm_f);//右后
         pwm_set_duty(TIM9_PWM_CH1_A2,L_pwm);//左前
         pwm_set_duty(TIM9_PWM_CH2_A3,L_pwm_f); //左后
-//    }
+    }
 
 
 
@@ -92,8 +93,13 @@ void Incremental_pwm()
 
 void pwm_out()
 {
-
-    if((status_roundabout>0&&status_roundabout<3)||(status_roundabout>=7 &&status_roundabout<=8))
+    if(Trans_Pixels(1,LCenter[1]) == 0 && Trans_Pixels(2,LCenter[2]) == 0 && Trans_Pixels(3,LCenter[3]) == 0 && flag_ruku <2 && flag_podao == 0)
+    {
+        f_longstraight = 0;
+        L_exp = 0;
+        R_exp = 0;
+    }
+    else if((status_roundabout>0&&status_roundabout<2)||(status_roundabout>=7 &&status_roundabout<=8))
     {
         f_longstraight = 0;
         L_exp = speed1;
@@ -101,7 +107,6 @@ void pwm_out()
     }
     else if(f_turn_left == 0&&f_turn_right == 0&&f_straight == 1 && flag_podao == 0)//直道  赛道判断条件待确定
     {
-
         f_longstraight++;
         L_exp = speed1;
         R_exp = speed1;
@@ -117,8 +122,8 @@ void pwm_out()
         f_longstraight = 0;
         if(status_roundabout >=3 && status_roundabout < 7)
         {
-            L_exp = speed3 - 0.5*abs(steer_out-middle) * chasu_huandao;
-            R_exp = speed3 + 0.5*abs(steer_out-middle) * chasu_huandao;
+            L_exp = speed3 - 0.7*abs(steer_out-middle) * chasu_huandao;
+            R_exp = speed3 + 0.3*abs(steer_out-middle) * chasu_huandao;
         }
         else if(status_forkroad != 0 )
         {
@@ -127,8 +132,8 @@ void pwm_out()
         }
         else
         {
-            L_exp = speed2  - 0.5* abs(steer_out-middle) * chasu;
-            R_exp = speed2  + 0.5* abs(steer_out-middle) * chasu;
+            L_exp = speed2  - 0.7* abs(steer_out-middle) * chasu;
+            R_exp = speed2  + 0.3* abs(steer_out-middle) * chasu;
         }
     }
     else if(f_turn_left == 0&&f_turn_right == 1&&f_straight == 0)//右转
@@ -136,8 +141,8 @@ void pwm_out()
         f_longstraight = 0;
         if(status_roundabout >=3 && status_roundabout < 7)
         {
-            L_exp = speed3 + 0.5 * abs(steer_out-middle) * chasu_huandao;
-            R_exp = speed3 - 0.5 * abs(steer_out-middle) * chasu_huandao;
+            L_exp = speed3 + 0.3 * abs(steer_out-middle) * chasu_huandao;
+            R_exp = speed3 - 0.7 * abs(steer_out-middle) * chasu_huandao;
         }
         else if(status_forkroad != 0 )
         {
@@ -146,8 +151,8 @@ void pwm_out()
         }
         else
         {
-            L_exp = speed2 + 0.5 * abs(steer_out-middle) * chasu ;
-            R_exp = speed2 - 0.5 * abs(steer_out-middle) * chasu;
+            L_exp = speed2 + 0.3 * abs(steer_out-middle) * chasu ;
+            R_exp = speed2 - 0.7 * abs(steer_out-middle) * chasu;
         }
     }
     Incremental_pwm();
@@ -173,6 +178,11 @@ void steer_control()
     {
         kp = kp_fork_out;
         kd = kd_fork_out;
+    }
+    else if(flag_podao)
+    {
+        kp = kp_turn;
+        kd = kd_turn;
     }
     else if(flag_roundabout)
     {

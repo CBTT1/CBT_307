@@ -10,12 +10,6 @@
 
 #include "zf_driver_flash.h"
 
-typedef union FLASH_Type{
-    uint32 dat;
-    float fdat;
-    int16 idat;
-    char cdat;
-}Flash_Type;
 
 extern char Is_FlashSave;
 

@@ -39,7 +39,6 @@ int main(void)
 
 
 
-    menu_init();
     pwm_init(TIM10_PWM_CH1_D1,50,726);
     pwm_init(TIM9_PWM_CH2_A3,12000,0);//左后
     pwm_init(TIM9_PWM_CH1_A2,12000,0);//左前
@@ -50,7 +49,8 @@ int main(void)
 
     mt9v03x_init_dvp();
     My_SdCard_Init();
-
+    read_flashdata();
+    menu_init();
     interrupt_global_enable();              // 总中断最后开启
     while(1)
     {
