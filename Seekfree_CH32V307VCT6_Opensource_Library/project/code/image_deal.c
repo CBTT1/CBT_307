@@ -3972,39 +3972,35 @@ void symbol_judge()
         if (podao_up == 1)
         {
             error = (92 - LCenter[2]);
-            if(flag_left_podao)
-            {
-                reg_center = LCenter[2] - 10;
-            }
-            else if(flag_right_podao)
-            {
-                reg_center = LCenter[2] + 10;
-            }
-            else
-            {
-                reg_center = LCenter[2];
-            }
-            f_straight = 1;
+            // if(flag_left_podao)
+            // {
+            //     reg_center = LCenter[2] - 10;
+            // }
+            // else if(flag_right_podao)
+            // {
+            //     reg_center = LCenter[2] + 10;
+            // }
+            // else
+            // {
+            //     reg_center = LCenter[2];
+            // }
             kp = kp_straight;
             kd = kd_straight;
         }
         else if (podao_top == 1)
         {
             error = (92 - LCenter[0]);
-            f_straight = 1;
             kp = kp_straight;
             kd = kd_straight;
         }
         else if (podao_down == 1)
         {
             error = 92 - LCenter[0];
-            f_straight = 1;
             kp = kp_straight;
             kd = kd_straight;
         }
-        else if(podao_lock != 0 )
+        else if(podao_lock != 0 ) //不确定是否来得及拐弯
         {
-            f_straight = 1;
             kp = kp_turn;
             kd = kd_turn;
         }
